@@ -142,3 +142,7 @@ dmypy.json
 # Windows
 Thumbs.db
 ehthumbs.db
+
+
+credentials.json
+token.json
