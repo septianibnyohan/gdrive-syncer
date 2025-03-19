@@ -40,7 +40,7 @@ class DatabaseManager:
         """Get the last modified time of a file."""
         if file_path.exists():
             mod_time = file_path.stat().st_mtime
-            return datetime.datetime.fromtimestamp(mod_time)
+            return datetime.datetime.utcfromtimestamp(mod_time)
         logger.warning("File does not exist: %s", file_path)
         return None
 

@@ -50,7 +50,6 @@ class LocalDriveSyncer:
                 logger.debug("Folder record obtained: %s", folder_record)
                 folder_record_remote_id = folder_record.remote_id
 
-
             logger.info("Processing items in folder: %s", local_path)
             self._process_folder_items(local_path, folder_record_remote_id)
             logger.info("Finished processing folder: %s", local_path)
@@ -145,14 +144,14 @@ class LocalDriveSyncer:
         local_mtime = datetime.datetime.utcfromtimestamp(local_file_path.stat().st_mtime)
         remote_mtime = file_record.last_modified_remote
 
-        local_size = local_file_path.stat().st_size if local_file_path.exists() else 0
-        remote_size = file_record.file_size
+        file = self.db_manager.get_file_by_local_path(local_file_path)
 
-        if remote_size >= local_size:
+        logger.info(f"compare time local_mtime <= file.last_modified_local -> {local_mtime} <= {file.last_modified_local} : {local_mtime <= file.last_modified_local}")
+        if local_mtime <= file.last_modified_local:
             return False
 
         logger.info("Update check for %s. Local mtime: %s, Remote mtime: %s",
-                     local_file_path, local_mtime, remote_mtime)
+                    local_file_path, local_mtime, remote_mtime)
         return local_mtime > remote_mtime
 
     def _upload_new_file(self, local_file_path: Path, remote_parent_id: str):
